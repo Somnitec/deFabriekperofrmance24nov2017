@@ -33,18 +33,21 @@ float pos4ratio = 0.8;
 int posmin = 0;
 int posmax = 30;
 
+int organPWMtime = 10;
+unsigned long organ1PWMtimer = 0;
+unsigned long organ2PWMtimer = 0;
 
 boolean organ1state = false;
 int organ1ontime = 7;
 int organ1offtime = 2;
 unsigned long organ1timer = 0;
-
+float organ1level = 0.5;
 
 boolean organ2state = true;
 int organ2ontime = 3;
 int organ2offtime = 7;
 unsigned long organ2timer = 0;
-
+float organ2level = 0.5;
 
 
 int states = 4;
@@ -73,8 +76,8 @@ void setup() {
   pinMode(organ1, OUTPUT);
   pinMode(organ2, OUTPUT);
 
-  pinMode(servoson,INPUT_PULLUP);
-  pinMode(organfull,INPUT_PULLUP);
+  pinMode(servoson, INPUT_PULLUP);
+  pinMode(organfull, INPUT_PULLUP);
 
   Serial.begin(115200);
   Serial.println("restarted!");
@@ -85,13 +88,13 @@ void loop() {
 }
 
 void generator() {
-  timemod=analogRead(potmeter);
-  if(digitalRead(organfull))organs();
+  timemod = analogRead(potmeter);
+  if (digitalRead(organfull))organs();
   else {
     digitalWrite(organ1, HIGH);
     digitalWrite(organ2, HIGH);
   }
-  if(digitalRead(servoson))  servos();
+  if (digitalRead(servoson))  servos();
 
 
 }
@@ -100,13 +103,13 @@ void organs() {
   unsigned long currentMillis = millis();
 
   if (organ1state) {
-    if (currentMillis - organ1timer > organ1ontime*timemod) {
+    if (currentMillis - organ1timer > organ1ontime * timemod) {
       organ1timer = currentMillis;
       organ1state = false;
       digitalWrite(organ1, organ1state);
     }
   }  else {
-    if (currentMillis - organ1timer > organ1offtime*timemod) {
+    if (currentMillis - organ1timer > organ1offtime * timemod) {
       organ1timer = currentMillis;
       organ1state = true;
       digitalWrite(organ1, organ1state);
@@ -114,63 +117,66 @@ void organs() {
   }
 
   if (organ2state) {
-    if (currentMillis - organ2timer > organ2ontime*timemod) {
+    if (currentMillis - organ2timer > organ2ontime * timemod) {
       organ2timer = currentMillis;
       organ2state = false;
       digitalWrite(organ2, organ2state);
     }
   }  else {
-    if (currentMillis - organ2timer > organ2offtime*timemod) {
+    if (currentMillis - organ2timer > organ2offtime * timemod) {
       organ2timer = currentMillis;
       organ2state = true;
       digitalWrite(organ2, organ2state);
     }
   }
+
+
+
 }
 
 void servos() {
   unsigned long currentMillis = millis();
 
   if (pos1 == posmin) {
-    if (currentMillis - postimer1 > timemod*pos1time*pos1ratio) {
+    if (currentMillis - postimer1 > timemod * pos1time * pos1ratio) {
       postimer1 = currentMillis;
       pos1 = posmax;
     }
   }  else {
-    if (currentMillis - postimer1 > timemod*pos1time*(1-pos1ratio)) {
+    if (currentMillis - postimer1 > timemod * pos1time * (1 - pos1ratio)) {
       postimer1 = currentMillis;
       pos1 = posmin;
     }
   }
   if (pos2 == posmin) {
-    if (currentMillis - postimer2 > timemod*pos2time*pos2ratio) {
+    if (currentMillis - postimer2 > timemod * pos2time * pos2ratio) {
       postimer2 = currentMillis;
       pos2 = posmax;
     }
   }  else {
-    if (currentMillis - postimer2 > timemod*pos2time*(1-pos2ratio)) {
+    if (currentMillis - postimer2 > timemod * pos2time * (1 - pos2ratio)) {
       postimer2 = currentMillis;
       pos2 = posmin;
     }
   }
   if (pos3 == posmin) {
-    if (currentMillis - postimer3 > timemod*pos3time*pos3ratio) {
+    if (currentMillis - postimer3 > timemod * pos3time * pos3ratio) {
       postimer3 = currentMillis;
       pos3 = posmax;
     }
   }  else {
-    if (currentMillis - postimer3 > timemod*pos3time*(1-pos3ratio)) {
+    if (currentMillis - postimer3 > timemod * pos3time * (1 - pos3ratio)) {
       postimer3 = currentMillis;
       pos3 = posmin;
     }
   }
   if (pos4 == posmin) {
-    if (currentMillis - postimer4 > timemod*pos4time*pos4ratio) {
+    if (currentMillis - postimer4 > timemod * pos4time * pos4ratio) {
       postimer4 = currentMillis;
       pos4 = posmax;
     }
   }  else {
-    if (currentMillis - postimer4 > timemod*pos4time*(1-pos4ratio)) {
+    if (currentMillis - postimer4 > timemod * pos4time * (1 - pos4ratio)) {
       postimer4 = currentMillis;
       pos4 = posmin;
     }
